@@ -1,6 +1,11 @@
 const express=require('express');
 const dotenv=require('dotenv');
 const logger=require('morgan');
+const sequelize=require('./config/db');
+
+//schema initialize
+const Muncipality = require('./schemas/Muncipality');
+const User = require('./schemas/User');
 
 //initialize express app
 const app=express();
@@ -11,6 +16,34 @@ dotenv.config({path:"./config/config.env"});
 //Body parsing
 app.use(express.json())
 app.use(express.urlencoded({extended:true}));
+
+//connecting to database
+const connectDb=async()=>{
+    try {
+      await sequelize.authenticate();
+      console.log('Connected to database successfully');
+    } catch (error) {
+      console.error('Unable to connect to the database:', error);
+    }
+}
+connectDb()
+
+//syncing models sequelize
+const syncModel=async()=>{
+    try{
+        await User.sync();
+        await Muncipality.sync()
+       
+        console.log('Successfully synced all models');
+        }catch(err){
+            console.error('Failed in syncing models',err)
+        }
+        
+}
+syncModel()
+
+//Initialize morgan
+app.use(logger("dev"));
 
 
 const PORT=process.env.PORT || 5000
