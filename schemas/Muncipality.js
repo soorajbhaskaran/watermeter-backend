@@ -1,28 +1,30 @@
 const {DataTypes}=require('sequelize')
 const sequelize=require('../config/db');
+const Price = require('./Price');
 const User = require('./User');
 
 const Muncipality=sequelize.define('muncipality',{
-    currentThreshold:{
-        type:DataTypes.INTEGER,
-        allowNull:false
-    },
     currentReading:{
         type: DataTypes.INTEGER,
         allowNull:false
     },
-    price:{
+    currentMonthlyPrice:{
         type:DataTypes.INTEGER,
-        allowNull:false
-    },
-    dateTime:{
-        type:DataTypes.DATE,
         allowNull:false
     },
     userId:{
         type:DataTypes.INTEGER,
+        allowNull:false,
         references:{
             model:User,
+            key:"id"
+        }
+    },
+    priceId:{
+        type:DataTypes.INTEGER,
+        allowNull:false,
+        references:{
+            model:Price,
             key:"id"
         }
     }

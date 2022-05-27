@@ -1,4 +1,5 @@
 const User=require('../schemas/User')
+const Price=require('../schemas/Price')
 const asyncHandler=require('../middlewares/async')
 const ErrorResponce=require('../utils/ErrorResponce');
 
@@ -90,6 +91,23 @@ exports.logoutUser = asyncHandler(async (req, res, next) => {
 
     res.status(200).json({ success: true, data: {} })
 });
+
+//@desc Change rate
+//@router POST /api/user
+//@access Private
+exports.changeRate=asyncHandler(async(req,res,next)=>{
+    const{currentPrice,quantity}=req.body;
+    const price=await Price.create({currentPrice,quantity});
+
+    if(!price){
+        return next(new ErrorResponce('Price cannot be null',401));
+    }
+
+    res.status(200).json({
+        success:true,
+        price
+    })
+})
 
 //Create a cookie from create user and login
 const sendbackCookie = (statusCode, res, user) => {

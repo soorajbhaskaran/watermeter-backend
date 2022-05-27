@@ -28,6 +28,10 @@ const User=sequelize.define('user',{
         type: DataTypes.STRING,
         allowNull: false
     },
+    currentThreshold:{
+     type:DataTypes.INTEGER,
+     allowNull:false
+    },
     status:{
       type:DataTypes.ENUM,
       values:['active','inactive'],

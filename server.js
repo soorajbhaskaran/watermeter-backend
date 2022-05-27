@@ -8,6 +8,7 @@ const cookieparser=require('cookie-parser');
 //schema initialize
 const Muncipality = require('./schemas/Muncipality');
 const User = require('./schemas/User');
+const Price = require('./schemas/Price')
 
 //initialize express app
 const app=express();
@@ -34,7 +35,8 @@ connectDb()
 const syncModel=async()=>{
     try{
         await User.sync();
-        await Muncipality.sync()
+        await Muncipality.sync();
+        await Price.sync();
        
         console.log('Successfully synced all models');
         }catch(err){
