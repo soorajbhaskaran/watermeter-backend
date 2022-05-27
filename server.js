@@ -48,9 +48,11 @@ syncModel()
 
 //Initialize routes
 const auth=require("./routes/auth");
+const muncipality=require("./routes/muncipality");
 
 //routes
 app.use("/api/user",auth);
+app.use("/api/munci",muncipality);
 
 //Initialize morgan
 app.use(logger("dev"));

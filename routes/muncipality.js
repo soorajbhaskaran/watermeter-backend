@@ -1,4 +1,10 @@
 const express=require('express');
-const check=require('../middlewares/check');
+const {authorize}=require('../middlewares/auth')
 
-const {}=require("../controllers/muncipality");
+const router=express.Router();
+const {meterData}=require("../controllers/muncipality");
+
+//endpoint to meterReading
+router.post('/raspi',authorize('admin'),meterData);
+
+module.exports=router;

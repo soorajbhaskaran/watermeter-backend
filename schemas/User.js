@@ -26,11 +26,11 @@ const User=sequelize.define('user',{
       }},
       password: {
         type: DataTypes.STRING,
-        allowNull: false
+        allowNull: false  
     },
     currentThreshold:{
-     type:DataTypes.INTEGER,
-     allowNull:false
+     type:DataTypes.BIGINT,
+    
     },
     status:{
       type:DataTypes.ENUM,

@@ -10,12 +10,12 @@ const ErrorResponce=require('../utils/ErrorResponce');
 exports.register = asyncHandler(async (req, res, next) => {
     console.log(req.body);
 
-    const { name,consumerNumber, email, password} = req.body;
+    const { name,consumerNumber, email, password, currentThreshold} = req.body;
 
     const role="user";
 
     //Create a User
-    const user = await User.create({name,consumerNumber, email, password, role});
+    const user = await User.create({name,consumerNumber, email, password, role, currentThreshold});
 
     if (!user) {
         return next(new ErrorResponce(`Entered invalid entry`, 404));

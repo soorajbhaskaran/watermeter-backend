@@ -4,12 +4,13 @@ const Price = require('./Price');
 const User = require('./User');
 
 const Muncipality=sequelize.define('muncipality',{
-    currentReading:{
+    currentWaterConsumption:{
         type: DataTypes.INTEGER,
-        allowNull:false
+        allowNull:false,
+        unique:true
     },
     currentMonthlyPrice:{
-        type:DataTypes.INTEGER,
+        type:DataTypes.DECIMAL,
         allowNull:false
     },
     userId:{
