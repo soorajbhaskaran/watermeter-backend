@@ -2,6 +2,8 @@ const express=require('express');
 const dotenv=require('dotenv');
 const logger=require('morgan');
 const sequelize=require('./config/db');
+const error=require('./middlewares/error');
+const cookieparser=require('cookie-parser');
 
 //schema initialize
 const Muncipality = require('./schemas/Muncipality');
@@ -42,8 +44,20 @@ const syncModel=async()=>{
 }
 syncModel()
 
+//Initialize routes
+const auth=require("./routes/auth");
+
+//routes
+app.use("/api/user",auth);
+
 //Initialize morgan
 app.use(logger("dev"));
+
+//cookie parser
+app.use(cookieparser())
+
+//Error Handler
+app.use(error);
 
 
 const PORT=process.env.PORT || 5000

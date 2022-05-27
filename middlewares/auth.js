@@ -1,5 +1,5 @@
 const jwt = require('jsonwebtoken');
-const User = require('../models/User');
+const User = require('../schemas/User');
 const asyncHandler = require('../middlewares/async');
 const ErrorResponce = require('../utils/ErrorResponce');
 
@@ -13,11 +13,12 @@ exports.protect = asyncHandler(async (req, res, next) => {
 
 
     }
-    //console.log(token);
+    
     
     else if (req.cookies.token) {
         token = req.cookies.token
     }
+    console.log(token);
 
     //Make sure token exists
     if (!token) {
@@ -36,9 +37,11 @@ exports.protect = asyncHandler(async (req, res, next) => {
 });
 
 exports.authorize = (...roles) => {
+    console.log(roles);
     return (req, res, next) => {
-        if (!roles.includes(req.user.role)) {
-            return next(new ErrorResponce(`User with ${req.user.role} is not authorized to access`, 402))
+        console.log(req.body.role);
+        if (!roles.includes(req.body.role)) {
+            return next(new ErrorResponce(`User with ${req.body.role} is not authorized to access`, 402))
         }
         next();
     }
