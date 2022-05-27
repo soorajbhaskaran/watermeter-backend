@@ -8,19 +8,19 @@ const errorHandler = (err, req, res, next) => {
     //log into error
     console.log(err.message);
 
-    //Moongose wrong ObjectId
+    //Sequilize wrong ObjectId
     if (err.name === 'CastError') {
         const message = `Resource not found with id ${err.value}`;
         error = new ErrorResponce(message, 404)
     }
 
-    //Mongoose error duplicate keys
+    // error duplicate keys
     if (err.statusCode === 401) {
         const message = `Invalid Credientials`;
         error = new ErrorResponce(message, 401);
     }
 
-    //Mongoose vaidation error
+    //vaidation error
     if (err.name === 'ValidationError') {
         const message = Object.values(err.errors).map(val => val.message);
         error = new ErrorResponce(message, 400)
