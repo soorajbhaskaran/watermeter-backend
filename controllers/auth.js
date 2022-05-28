@@ -2,20 +2,23 @@ const User=require('../schemas/User')
 const Price=require('../schemas/Price')
 const asyncHandler=require('../middlewares/async')
 const ErrorResponce=require('../utils/ErrorResponce');
+const Muncipality= require('../schemas/Muncipality')
 
+
+//USER & ADMIN
 
 //@desc Create user
 //@router POST /api/user
 //@access Public
-exports.register = asyncHandler(async (req, res, next) => {
+exports.registerUser = asyncHandler(async (req, res, next) => {
     console.log(req.body);
 
-    const { name,consumerNumber, email, password, currentThreshold} = req.body;
+    const { name,consumerNumber, email, password, currentThreshold, phoneNumber} = req.body;
 
     const role="user";
 
     //Create a User
-    const user = await User.create({name,consumerNumber, email, password, role, currentThreshold});
+    const user = await User.create({name,consumerNumber, email, password, role, currentThreshold, phoneNumber});
 
     if (!user) {
         return next(new ErrorResponce(`Entered invalid entry`, 404));
@@ -28,9 +31,9 @@ exports.register = asyncHandler(async (req, res, next) => {
 //@desc Login User
 //@router GET /api/user/login
 //@access Private
-exports.loginUser = asyncHandler(async (req, res, next) => {
+exports.login = asyncHandler(async (req, res, next) => {
 
-    const { email, password } = req.body;
+    const { email, password} = req.body;
     const status="active";
 
     //Checking basic validation for email and password
@@ -78,10 +81,10 @@ exports.getMe = asyncHandler(async (req, res, next) => {
     })
 });
 
-//@desc Current User
-//@router /api/v1/user/me
+//@desc logout User
+//@router GET /api/v1/user/logout
 //@access Private
-exports.logoutUser = asyncHandler(async (req, res, next) => {
+exports.logout = asyncHandler(async (req, res, next) => {
     res.cookie('token', 'none', {
         expires: new Date(Date.now() + 10 * 1000),
         httpOnly: true
@@ -90,6 +93,28 @@ exports.logoutUser = asyncHandler(async (req, res, next) => {
     await User.update({status},{where:{id: req.user.id}})
 
     res.status(200).json({ success: true, data: {} })
+});
+
+//@desc Update Details
+//@router PUT /api/user/updatedetails
+//@access Private
+exports.updateDetails = asyncHandler(async (req, res, next) => {
+    let updateContent = {
+        name: req.body.name,
+        email: req.body.email
+    }
+
+    const user =await User.update(updateContent,{
+        where:{id:req.user.id}
+    });
+
+    if (!user) {
+        return next(new ErrorResponce(`Some error has Occured`, 404));
+    }
+    res.status(200).json({
+        success: true,
+        user
+    })
 });
 
 //@desc Change rate
@@ -107,7 +132,24 @@ exports.changeRate=asyncHandler(async(req,res,next)=>{
         success:true,
         price
     })
-})
+});
+
+//@desc Get single user meter data
+//@router POST /api/munci
+//@access Private
+exports.getDetails=asyncHandler(async(req,res,next)=>{
+
+    const id=req.user.id;
+    const muncipality=await Muncipality.findOne({where:{userId:id},order:[['updatedAt', 'DESC']]});
+ 
+    if(!muncipality){
+        return next(new ErrorResponce('Given user data is not available',404));
+    }
+    const {currentWaterConsumption,currentMonthlyPrice}=muncipality;
+    
+    res.status(200).json({success:true,currentWaterConsumption,currentMonthlyPrice});
+ 
+ });
 
 //Create a cookie from create user and login
 const sendbackCookie = (statusCode, res, user) => {

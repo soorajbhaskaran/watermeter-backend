@@ -11,6 +11,10 @@ const User=sequelize.define('user',{
     consumerNumber:{
       type:DataTypes.BIGINT,
     },
+    phoneNumber:{
+      type:DataTypes.BIGINT,
+      allowNull:false,
+  },
    role:{
       type:DataTypes.ENUM,
       values:['admin','user'],

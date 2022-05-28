@@ -19,20 +19,24 @@ exports.meterData=asyncHandler(async(req,res,next)=>{
     const {currentPrice,id}=await Price.findOne({order:[['updatedAt', 'DESC']]});
     const priceId=id;
     const currentMonthlyPrice=currentPrice*parseFloat(currentWaterConsumption/1000).toFixed(2);
-
-    const checkUser= await Muncipality.findOne({where:{userId:userId}});
-    let muncipality;
-    if(!checkUser){
+    
+    const muncipality=await Muncipality.create({currentWaterConsumption,currentMonthlyPrice,userId,priceId});
+   // const checkUser= await Muncipality.findOne({where:{userId:userId}});
+    //const muncipality=await Muncipality.update(newContent,{where:{id:1}});
+    //console.log(muncipality.currentMonthlyPrice)
+    //const checkUser= await Muncipality.findOne({where:{userId:userId}});
+    //let muncipality;
+    /*if(!checkUser){
        muncipality=await Muncipality.create({currentWaterConsumption,currentMonthlyPrice,userId,priceId});
     }
     else{
-        let newContent={currentWaterConsumption,currentMonthlyPrice};
+        let newContent={currentWaterConsumption:currentWaterConsumption,currentMonthlyPrice:currentMonthlyPrice};
         console.log(currentWaterConsumption);
         console.log(currentMonthlyPrice);
         console.log(checkUser.id)
         muncipality=await Muncipality.update(newContent,{where:{id:checkUser.id}});
         console.log(muncipality.currentMonthlyPrice)
-    }
+    }*/
   
     
 
@@ -52,17 +56,21 @@ exports.meterData=asyncHandler(async(req,res,next)=>{
     })
 });
 
-//@desc Get all user data
-//@router POST /api/munci
-//@access Private
-exports.getDetails=asyncHandler(async(req,res,next)=>{
+exports.getConsumerData=asyncHandler(async(req,res,next)=>{
+const {id}= await User.findOne({where:{consumerNumber:req.body.consumerNumber}});
+if(!id){
+    return next(new ErrorResponce("User with given consumer number do not exist",404));
+}
+const consumer= await Muncipality.findOne({where:{userId:id},order:[['updatedAt', 'DESC']]});
+if(!consumer){
+     return next(new ErrorResponce("The given consumer data is not updated",404));
+}
+res.status(200).json({
+    success:true,
+    consumer
 
-   const id=req.body.userId;
-   const muncipality=await Muncipality.findByPk(id);
-
-   if(!muncipality){
-       return next(new ErrorResponce('Given user data is not available',404));
-   }
-   
+})
 
 });
+
+
