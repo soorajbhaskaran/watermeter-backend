@@ -1,6 +1,5 @@
 const {DataTypes}=require('sequelize');
 const sequelize=require('../config/db');
-const Muncipality=require('../schemas/Muncipality');
 const User=require('./User');
 
 const Billing=sequelize.define('billing',{
@@ -13,23 +12,25 @@ const Billing=sequelize.define('billing',{
         }
     },
     consumedPrice:{
-        type:DataTypes.INTEGER,
-        references:{
-            model:Muncipality,
-            key: "id"
-        }
+        type:DataTypes.BIGINT,
+        allowNull:false
     },
     gst:{
         type:DataTypes.INTEGER,
         allowNull:false
     },
     totalCost:{
-        type:DataTypes.INTEGER,
+        type:DataTypes.BIGINT,
         allowNull:false
     },
     monthYear:{
         type:DataTypes.STRING,
         allowNull:false
+    },
+    status:{
+        type:DataTypes.ENUM,
+        values: ['paid','unpaid'],
+        defaultValue:'unpaid'
     }
 
 

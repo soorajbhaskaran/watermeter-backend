@@ -13,7 +13,12 @@ const Muncipality=sequelize.define('muncipality',{
         type:DataTypes.DECIMAL,
         allowNull:false
     },
-    userId:{
+    currentMeterReading:{
+     type:DataTypes.BIGINT,
+     allowNull:false,
+     unique:true
+    },
+   userId:{
         type:DataTypes.INTEGER,
         allowNull:false,
         references:{
