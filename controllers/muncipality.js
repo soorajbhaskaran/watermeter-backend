@@ -1,4 +1,4 @@
-const asyncHandler=require('../middlewares/async')
+const asyncHandler=require('../middlewares/async');
 const ErrorResponce=require('../utils/ErrorResponce');
 const User = require('../schemas/User');
 const Price = require('../schemas/Price');

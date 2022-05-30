@@ -1,17 +1,17 @@
 
 const User = require('../schemas/User')
 
-const checkDuplicateUsernameOrEmail = (req, res, next) => {
+const checkDuplicateConsumerNumber = (req, res, next) => {
 
-    // Email
-    User.findOne({
+    // Consumer Number checking
+        User.findOne({
       where: {
         consumerNumber: req.body.consumerNumber
       }
     }).then(user => {
       if (user) {
         res.status(400).send({
-          message: "Failed! Email is already in use!"
+          message: "Failed! Consumer Number already in use!"
         });
         return;
       }
@@ -19,4 +19,4 @@ const checkDuplicateUsernameOrEmail = (req, res, next) => {
       next();
     });
 };
-module.exports=checkDuplicateUsernameOrEmail;
+module.exports=checkDuplicateConsumerNumber;
