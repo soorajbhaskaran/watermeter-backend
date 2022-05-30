@@ -9,7 +9,9 @@ const User=sequelize.define('user',{
       allowNull:false,
     },
     consumerNumber:{
-      type:DataTypes.BIGINT,
+      type:DataTypes.INTEGER(8),
+      allowNull:false,
+      primaryKey:true
     },
     phoneNumber:{
       type:DataTypes.BIGINT,
@@ -20,14 +22,6 @@ const User=sequelize.define('user',{
       values:['admin','user'],
       allowNull:false
     },
-    email:{
-      type: DataTypes.STRING,
-      unique:true,
-      allowNull:false,
-      validate:{
-        isEmail:true,
-
-      }},
       password: {
         type: DataTypes.STRING,
         allowNull: false  
@@ -55,7 +49,7 @@ User.beforeCreate(async function(user,options){
   });
 
   User.prototype.jwtWebToken=function(){
-    return jwt.sign({ id: this.id }, process.env.JWT_SECRET_KEY, { expiresIn: process.env.JWT_EXPIRES_IN })
+    return jwt.sign({ consumerNumber: this.consumerNumber }, process.env.JWT_SECRET_KEY, { expiresIn: process.env.JWT_EXPIRES_IN })
   }
   
   User.prototype.matchPassword=async function(enteredPassword){

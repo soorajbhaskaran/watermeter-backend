@@ -3,12 +3,12 @@ const sequelize=require('../config/db');
 const User=require('./User');
 
 const Billing=sequelize.define('billing',{
-    userId:{
-        type:DataTypes.INTEGER,
+    fk_consumerId:{
+        type:DataTypes.INTEGER(8),
         allowNull:false,
         references:{
             model:User,
-            key:"id"
+            key:'consumerNumber',
         }
     },
     consumedPrice:{
@@ -18,6 +18,16 @@ const Billing=sequelize.define('billing',{
     gst:{
         type:DataTypes.INTEGER,
         allowNull:false
+    },
+    due:{
+        type:DataTypes.INTEGER,
+        allowNull:false,
+        defaultValue:0
+    },
+    fine:{
+        type:DataTypes.INTEGER,
+        allowNull:false,
+        defaultValue:0
     },
     totalCost:{
         type:DataTypes.BIGINT,

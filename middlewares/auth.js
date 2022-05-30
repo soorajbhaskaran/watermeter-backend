@@ -16,7 +16,7 @@ exports.protect = asyncHandler(async (req, res, next) => {
     else if (req.cookies.token) {
         token = req.cookies.token
     }
-    console.log(token);
+   
 
     //Make sure token exists
     if (!token) {
@@ -26,8 +26,7 @@ exports.protect = asyncHandler(async (req, res, next) => {
     //Verify the token 
     try {
         const decoded = jwt.verify(token, process.env.JWT_SECRET_KEY);
-       req.user= await User.findByPk(decoded.id)
-       console.log(req.user)
+       req.user= await User.findByPk(decoded.consumerNumber)
         next();
     } catch (error) {
         return next(new ErrorResponce(`Not authorized to access the request`, 401));

@@ -18,12 +18,12 @@ const Muncipality=sequelize.define('muncipality',{
      allowNull:false,
      unique:true
     },
-   userId:{
-        type:DataTypes.INTEGER,
+   fk_consumerId:{
+        type:DataTypes.INTEGER(8),
         allowNull:false,
         references:{
             model:User,
-            key:"id"
+            key:'consumerNumber'
         }
     },
     priceId:{

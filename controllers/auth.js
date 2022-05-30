@@ -11,14 +11,13 @@ const Muncipality= require('../schemas/Muncipality')
 //@router POST /api/user
 //@access Public
 exports.registerUser = asyncHandler(async (req, res, next) => {
-    console.log(req.body);
-
-    const { name,consumerNumber, email, password, currentThreshold, phoneNumber} = req.body;
+    
+    const { name, password,consumerNumber, currentThreshold, phoneNumber} = req.body;
 
     const role="user";
 
     //Create a User
-    const user = await User.create({name,consumerNumber, email, password, role, currentThreshold, phoneNumber});
+    const user = await User.create({name,consumerNumber, password, role, currentThreshold, phoneNumber});
 
     if (!user) {
         return next(new ErrorResponce(`Entered invalid entry`, 404));
@@ -33,16 +32,16 @@ exports.registerUser = asyncHandler(async (req, res, next) => {
 //@access Private
 exports.login = asyncHandler(async (req, res, next) => {
 
-    const { email, password} = req.body;
+    const { consumerNumber, password} = req.body;
     const status="active";
 
     //Checking basic validation for email and password
-    if (!email || !password) {
-        return next(new ErrorResponce('Please enter a email and a password :', 400));
+    if (!consumerNumber || !password) {
+        return next(new ErrorResponce('Please enter a consumerNumber and a password :', 400));
     }
 
     //Checking for user in db
-    const user = await User.findOne({where: {email}});
+    const user = await User.findByPk(consumerNumber);
 
     if (!user) {
         return next(new ErrorResponce('Invalid credientials', 401));
@@ -60,7 +59,7 @@ exports.login = asyncHandler(async (req, res, next) => {
         + currentdate.getFullYear() + " @ "  
         + currentdate.getHours() + ":"  
         + currentdate.getMinutes() + ":" 
-        + currentdate.getSeconds()},{where:{id: user.id}})
+        + currentdate.getSeconds()},{where:{consumerNumber: consumerNumber}})
     sendbackCookie(200, res, user);
 
 });
@@ -69,8 +68,9 @@ exports.login = asyncHandler(async (req, res, next) => {
 //@router GET /api/user/me
 //@access Private
 exports.getMe = asyncHandler(async (req, res, next) => {
-    const user = await User.findByPk(req.user.id)
-    console.log(user)
+    console.log(req.user.consumerNumber);
+    const user = await User.findByPk(req.user.consumerNumber)
+    //console.log(user)
 
     if (!user) {
         return next(new ErrorResponce(`Some error has Occured`, 404));
@@ -90,7 +90,7 @@ exports.logout = asyncHandler(async (req, res, next) => {
         httpOnly: true
     });
     const status='inactive';
-    await User.update({status},{where:{id: req.user.id}})
+    await User.update({status},{where:{consumerNumber: req.user.consumerNumber}})
 
     res.status(200).json({ success: true, data: {} })
 });
@@ -101,11 +101,11 @@ exports.logout = asyncHandler(async (req, res, next) => {
 exports.updateDetails = asyncHandler(async (req, res, next) => {
     let updateContent = {
         name: req.body.name,
-        email: req.body.email
+       phoneNumber: req.body.phoneNumber
     }
 
     const user =await User.update(updateContent,{
-        where:{id:req.user.id}
+        where:{consumerNumber:req.user.consumerNumber}
     });
 
     if (!user) {
@@ -139,8 +139,8 @@ exports.changeRate=asyncHandler(async(req,res,next)=>{
 //@access Private
 exports.getDetails=asyncHandler(async(req,res,next)=>{
 
-    const id=req.user.id;
-    const muncipality=await Muncipality.findOne({where:{userId:id},order:[['updatedAt', 'DESC']]});
+    const id=req.user.consumerNumber;
+    const muncipality=await Muncipality.findOne({where:{fk_consumerId:id},order:[['updatedAt', 'DESC']]});
  
     if(!muncipality){
         return next(new ErrorResponce('Given user data is not available',404));

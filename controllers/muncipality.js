@@ -11,10 +11,11 @@ const Billing=require('../schemas/Billing');
 
 exports.meterData=asyncHandler(async(req,res,next)=>{
 
-    const {userId,currentReading}=req.body;
+    const {consumerNumber,currentReading}=req.body;
+    const fk_consumerId=consumerNumber;
 
     //checking if the given user exist
-    const user=await User.findByPk(userId);
+    const user=await User.findByPk(consumerNumber);
     if(!user){
         return next(new ErrorResponce('No such user',404));
     }
@@ -28,11 +29,11 @@ exports.meterData=asyncHandler(async(req,res,next)=>{
     const currentMonthlyPrice=currentPrice*parseFloat(currentWaterConsumption/1000).toFixed(2);
 
    //checking if user to confirm to create or update
-    const checkUser= await Muncipality.findOne({where:{userId:userId}});
+    const checkUser= await Muncipality.findOne({where:{fk_consumerId:fk_consumerId}});
     let muncipality;
     if(!checkUser){
         //creating new record
-       muncipality=await Muncipality.create({currentWaterConsumption,currentMonthlyPrice,userId,priceId,currentMeterReading:currentReading});
+       muncipality=await Muncipality.create({currentWaterConsumption,currentMonthlyPrice,fk_consumerId,priceId,currentMeterReading:currentReading});
     }
     else{
         let newContent={currentWaterConsumption:currentWaterConsumption,currentMonthlyPrice:currentMonthlyPrice};
@@ -48,12 +49,12 @@ exports.meterData=asyncHandler(async(req,res,next)=>{
     //condition to update the billing and userthreshold on 00:00:00 everymonth @30
     if(date.getDate()==="30" && date.getHours()==="0" && date.getMinutes()==="00" && date.getSeconds()==="00" ){
         let updateContent={currentThreshold:currentReading};
-        await User.update(updateContent,{where:{id:userId}});
+        await User.update(updateContent,{where:{consumerNumber:fk_consumerId}});
         const consumedPrice=currentMonthlyPrice;
         const gst=18;
         const totalCost=consumedPrice+(gst/100)*consumedPrice;
         const monthYear= date.getMonth() + '/' +date.getYear();
-        const billing=await Billing.create({userId:userId,consumedPrice:consumedPrice,gst:gst,totalCost:totalCost,monthYear:monthYear});
+        const billing=await Billing.create({fk_consumerId:fk_consumerId,consumedPrice:consumedPrice,gst:gst,totalCost:totalCost,monthYear:monthYear});
         if (!billing){
             return next(new ErrorResponce("Billing is not created",404));
         }
@@ -66,11 +67,11 @@ exports.meterData=asyncHandler(async(req,res,next)=>{
 });
 
 exports.getConsumerData=asyncHandler(async(req,res,next)=>{
-const {id}= await User.findOne({where:{consumerNumber:req.body.consumerNumber}});
-if(!id){
+const consumerNumber= req.user.consumerNumber; 
+if(!consumerNumber){
     return next(new ErrorResponce("User with given consumer number do not exist",404));
 }
-const consumer= await Muncipality.findOne({where:{userId:id},order:[['updatedAt', 'DESC']]});
+const consumer= await Muncipality.findOne({where:{fk_consumerId:consumerNumber},order:[['updatedAt', 'DESC']]});
 if(!consumer){
      return next(new ErrorResponce("The given consumer data is not updated",404));
 }

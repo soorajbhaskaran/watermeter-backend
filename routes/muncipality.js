@@ -3,7 +3,7 @@ const {authorize, protect}=require('../middlewares/auth')
 
 const router=express.Router();
 const {meterData,getConsumerData,gener}=require("../controllers/muncipality");
-const {generateBill,payBill}=require("../controllers/bill");
+const {generateBill}=require("../controllers/bill");
 
 //endpoint to meterReading
 router.post('/raspi',authorize('admin'),meterData);
