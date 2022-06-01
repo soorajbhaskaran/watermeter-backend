@@ -11,7 +11,10 @@ const Billing=require('../schemas/Billing');
 
 exports.meterData=asyncHandler(async(req,res,next)=>{
 
-    const {consumerNumber,currentReading}=req.body;
+    const {consumerNumber}=req.body;
+    let {currentReading}=req.body;
+    currentReading=parseInt(currentReading,10);
+    console.log(currentReading)
     const fk_consumerId=consumerNumber;
 
     //checking if the given user exist
@@ -43,7 +46,7 @@ exports.meterData=asyncHandler(async(req,res,next)=>{
        muncipality=await Muncipality.create({currentWaterConsumption,currentMonthlyPrice,fk_consumerId,priceId,currentMeterReading:currentReading});
     }
     else{
-        let newContent={currentWaterConsumption:currentWaterConsumption,currentMonthlyPrice:currentMonthlyPrice};
+        let newContent={currentWaterConsumption:currentWaterConsumption,currentMonthlyPrice:currentMonthlyPrice,currentMeterReading:currentReading};
         //updating the content based on userId
         await Muncipality.update(newContent,{where:{id:checkUser.id}});
         muncipality= await Muncipality.findOne({where:{id:checkUser.id}})

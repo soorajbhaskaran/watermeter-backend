@@ -18,13 +18,13 @@ const ConsumerLogin: NextPage = () => {
               type="number"
               className="w-full block rounded-full border border-black py-3 px-5 focus:outline-none text-center placeholder:text-black"
               placeholder="Consumer no"
-              required value={}
+              required name="consumer"
             />
 
             <input
               type="password"
               className="w-full block rounded-full border border-black py-3 px-5 focus:outline-none text-center placeholder:text-black"
-              placeholder="Password"
+              placeholder="Password" name="password"
               required
             />
 
