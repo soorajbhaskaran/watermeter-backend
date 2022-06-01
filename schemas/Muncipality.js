@@ -14,7 +14,7 @@ const Muncipality=sequelize.define('muncipality',{
         allowNull:false
     },
     currentMeterReading:{
-     type:DataTypes.BIGINT,
+     type:DataTypes.INTEGER,
      allowNull:false,
      unique:true
     },

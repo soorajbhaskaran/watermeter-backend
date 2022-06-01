@@ -18,7 +18,7 @@ const ConsumerLogin: NextPage = () => {
               type="number"
               className="w-full block rounded-full border border-black py-3 px-5 focus:outline-none text-center placeholder:text-black"
               placeholder="Consumer no"
-              required
+              required value={}
             />
 
             <input
