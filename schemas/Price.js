@@ -3,7 +3,7 @@ const sequelize=require('../config/db');
 
 const Price=sequelize.define('price',{
     currentPrice:{
-        type:DataTypes.INTEGER,
+        type:DataTypes.DECIMAL(10,2),
         allowNull:false
     },
     quantity:{

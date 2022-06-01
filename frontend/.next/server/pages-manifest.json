@@ -2,13 +2,13 @@
   "/_app": "pages/_app.js",
   "/_document": "pages/_document.js",
   "/admin": "pages/admin.html",
-  "/admin/login": "pages/admin/login.html",
   "/admin/update": "pages/admin/update.html",
-  "/api/getReading": "pages/api/getReading.js",
-  "/consumer/history": "pages/consumer/history.html",
-  "/consumer": "pages/consumer.html",
+  "/admin/login": "pages/admin/login.html",
   "/consumer/login": "pages/consumer/login.html",
   "/": "pages/index.html",
   "/_error": "pages/_error.js",
+  "/consumer/history": "pages/consumer/history.html",
+  "/api/getReading": "pages/api/getReading.js",
+  "/consumer": "pages/consumer.html",
   "/404": "pages/404.html"
 }

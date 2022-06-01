@@ -22,11 +22,18 @@ exports.meterData=asyncHandler(async(req,res,next)=>{
     //calculating currentWaterconsumption
     const currentWaterConsumption=currentReading-user.currentThreshold;
     //finding latest updated price
-    const {currentPrice,id}=await Price.findOne({order:[['updatedAt', 'DESC']]});
+    const {currentPrice,id,quantity}=await Price.findOne({order:[['updatedAt', 'DESC']]});
     const priceId=id;
 
     //calculating monthly price
-    const currentMonthlyPrice=currentPrice*parseFloat(currentWaterConsumption/1000).toFixed(2);
+    //const currentMonthlyPrice=currentPrice*parseFloat(currentWaterConsumption/1000).toFixed(2);
+    let currentMonthlyPrice=0;
+    if(currentWaterConsumption<quantity){
+        currentMonthlyPrice=currentPrice;
+    }
+    else if(currentWaterConsumption<10000){
+      currentMonthlyPrice=currentPrice+((currentWaterConsumption-quantity)/1000)*4.41;
+    }
 
    //checking if user to confirm to create or update
     const checkUser= await Muncipality.findOne({where:{fk_consumerId:fk_consumerId}});
@@ -44,17 +51,35 @@ exports.meterData=asyncHandler(async(req,res,next)=>{
     if(!muncipality){
         return next(new ErrorResponce('The data is not updated'));
     }
-    const date=muncipality.createdAt;;
+    const date=muncipality.createdAt;
+   
+
 
     //condition to update the billing and userthreshold on 00:00:00 everymonth @30
     if(date.getDate()==="30" && date.getHours()==="0" && date.getMinutes()==="00" && date.getSeconds()==="00" ){
         let updateContent={currentThreshold:currentReading};
         await User.update(updateContent,{where:{consumerNumber:fk_consumerId}});
+        let due=0;
+        let fine=0
+        const previousBilling=await Billing.findOne({where:{fk_consumerId:result[i].dataValues.fk_consumerId},order:[['updatedAt', 'DESC']]});
+        if(!previousBilling){
+         due=0;
+         fine=0;
+        }
+        else{
+            if (previousBilling.status==="unpaid"){
+                due=previousBilling.totalCost;
+                fine=previousBilling.fine+5;
+            }
+            else{
+                due=0;
+                fine=0;  
+            }
+        }
         const consumedPrice=currentMonthlyPrice;
-        const gst=18;
-        const totalCost=consumedPrice+(gst/100)*consumedPrice;
+        const totalCost=consumedPrice+due+fine;
         const monthYear= date.getMonth() + '/' +date.getYear();
-        const billing=await Billing.create({fk_consumerId:fk_consumerId,consumedPrice:consumedPrice,gst:gst,totalCost:totalCost,monthYear:monthYear});
+        const billing=await Billing.create({fk_consumerId:fk_consumerId,consumedPrice:consumedPrice,totalCost:totalCost,monthYear:monthYear,due:due,fine:fine});
         if (!billing){
             return next(new ErrorResponce("Billing is not created",404));
         }

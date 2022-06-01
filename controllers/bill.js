@@ -34,12 +34,7 @@ exports.generateBill=asyncHandler(async(req,res,next)=>{
         else{
             if (previousBilling.status==="unpaid"){
                 due=previousBilling.totalCost;
-                const checkdate=new Date();
-                if(checkdate.getDate()>"15"){
-                 const fineDate= parseInt(checkdate.getDate())-15;
-                 fine=(0.005*due)*fineDate;
-            }
-           
+                fine=previousBilling.fine+5;
             }
             else{
                 due=0;
@@ -47,11 +42,10 @@ exports.generateBill=asyncHandler(async(req,res,next)=>{
             }
         }
         const consumedPrice=parseInt(result[i].dataValues.currentMonthlyPrice);
-        const gst=(5/100)*consumedPrice;
-        const totalCost=consumedPrice+gst+due+fine;
+        const totalCost=consumedPrice+due+fine;
         const date=new Date();
         const monthYear= date.getMonth()+1 + '/' +date.getFullYear();
-        const billing=await Billing.create({fk_consumerId:result[i].dataValues.fk_consumerId,consumedPrice:consumedPrice,gst:gst,totalCost:totalCost,monthYear:monthYear,due:due,fine:fine});
+        const billing=await Billing.create({fk_consumerId:result[i].dataValues.fk_consumerId,consumedPrice:consumedPrice,totalCost:totalCost,monthYear:monthYear,due:due,fine:fine});
         if (!billing){
             return next(new ErrorResponce("Billing is not created",404));
         }

@@ -12,15 +12,11 @@ const Billing=sequelize.define('billing',{
         }
     },
     consumedPrice:{
-        type:DataTypes.BIGINT,
-        allowNull:false
-    },
-    gst:{
-        type:DataTypes.INTEGER,
+        type:DataTypes.DECIMAL(10,2),
         allowNull:false
     },
     due:{
-        type:DataTypes.INTEGER,
+        type:DataTypes.DECIMAL(10,2),
         allowNull:false,
         defaultValue:0
     },
@@ -30,7 +26,7 @@ const Billing=sequelize.define('billing',{
         defaultValue:0
     },
     totalCost:{
-        type:DataTypes.BIGINT,
+        type:DataTypes.DECIMAL(10,2),
         allowNull:false
     },
     monthYear:{

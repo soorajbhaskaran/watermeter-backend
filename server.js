@@ -6,8 +6,8 @@ const error=require('./middlewares/error');
 const cookieparser=require('cookie-parser');
 
 //schema initialize
-const Muncipality = require('./schemas/Muncipality');
 const User = require('./schemas/User');
+const Muncipality = require('./schemas/Muncipality');
 const Price = require('./schemas/Price');
 const Billing = require('./schemas/Billing');
 
@@ -36,8 +36,8 @@ connectDb()
 const syncModel=async()=>{
     try{
         await User.sync();
-        await Muncipality.sync();
         await Price.sync();
+        await Muncipality.sync();
         await Billing.sync();
        
         console.log('Successfully synced all models');

@@ -10,7 +10,7 @@ const Muncipality=sequelize.define('muncipality',{
         unique:true
     },
     currentMonthlyPrice:{
-        type:DataTypes.DECIMAL,
+        type:DataTypes.DECIMAL(10,2),
         allowNull:false
     },
     currentMeterReading:{
