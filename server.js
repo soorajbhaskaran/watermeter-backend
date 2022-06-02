@@ -4,6 +4,7 @@ const logger=require('morgan');
 const sequelize=require('./config/db');
 const error=require('./middlewares/error');
 const cookieparser=require('cookie-parser');
+const cors=require('cors')
 
 //schema initialize
 const User = require('./schemas/User');
@@ -58,6 +59,9 @@ app.use("/api/munci",muncipality);
 
 //Initialize morgan
 app.use(logger("dev"));
+
+//use cors
+app.use(cors())
 
 //cookie parser
 app.use(cookieparser())

@@ -33,6 +33,7 @@ exports.meterData=asyncHandler(async(req,res,next)=>{
     let currentMonthlyPrice=0;
     if(currentWaterConsumption<quantity){
         currentMonthlyPrice=currentPrice;
+        
     }
     else if(currentWaterConsumption<10000){
       currentMonthlyPrice=currentPrice+((currentWaterConsumption-quantity)/1000)*4.41;

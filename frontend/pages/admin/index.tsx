@@ -12,6 +12,8 @@ const Admin: NextPage = () => {
     "Due/Paid/Unpaid",
   ];
 
+  
+
   return (
     <>
       <Seo

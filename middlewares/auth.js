@@ -17,6 +17,7 @@ exports.protect = asyncHandler(async (req, res, next) => {
         token = req.cookies.token
     }
    
+    
 
     //Make sure token exists
     if (!token) {
