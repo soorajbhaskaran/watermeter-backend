@@ -58,7 +58,7 @@ exports.generateBill=asyncHandler(async(req,res,next)=>{
 });
 
 exports.getMyBill=asyncHandler(async(req,res,next)=>{
-    const bill=await Billing.findOne({where:{userId:req.user.consumerNumber},order:[['createdAt', 'DESC']]});
+    const bill=await Billing.findOne({where:{fk_consumerId:req.user.consumerNumber},order:[['createdAt', 'DESC']]});
     if(!bill){
         return next(new ErrorResponce("No such bill is not found",404));
     }

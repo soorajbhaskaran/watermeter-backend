@@ -112,4 +112,16 @@ res.status(200).json({
 
 });
 
+exports.getAllConsumerData=asyncHandler(async(req,res,next)=>{
+    const consumer= await Muncipality.findAll();
+    if(!consumer){
+         return next(new ErrorResponce("No consumer data is available",404));
+    }
+    res.status(200).json({
+        success:true,
+        consumer
+    
+    })
+    
+    });
 
