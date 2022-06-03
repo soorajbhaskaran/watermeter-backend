@@ -145,9 +145,9 @@ exports.getDetails=asyncHandler(async(req,res,next)=>{
     if(!muncipality){
         return next(new ErrorResponce('Given user data is not available',404));
     }
-    const {currentWaterConsumption,currentMonthlyPrice}=muncipality;
+    const {currentWaterConsumption,currentMonthlyPrice,updatedAt}=muncipality;
     
-    res.status(200).json({success:true,currentWaterConsumption,currentMonthlyPrice});
+    res.status(200).json({success:true,currentWaterConsumption,currentMonthlyPrice,updatedAt});
  
  });
 
