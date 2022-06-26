@@ -5,6 +5,7 @@ const sequelize=require('./config/db');
 const error=require('./middlewares/error');
 const cookieparser=require('cookie-parser');
 const cors=require('cors')
+const bodyParser=require('body-parser');
 
 //schema initialize
 const User = require('./schemas/User');
@@ -19,8 +20,10 @@ const app=express();
 dotenv.config({path:"./config/config.env"});
 
 //Body parsing
-app.use(express.json())
-app.use(express.urlencoded({extended:true}));
+app.use(bodyParser.urlencoded({ extended: false }))
+
+// parse application/json
+app.use(bodyParser.json())
 
 //connecting to database
 const connectDb=async()=>{
@@ -50,18 +53,21 @@ const syncModel=async()=>{
 syncModel()
 
 //CORS middleware
-var corsMiddleware = function(req, res, next) {
+/*var corsMiddleware = function(req, res, next) {
   res.header('Access-Control-Allow-Origin', 'localhost'); //replace localhost with actual host
   res.header('Access-Control-Allow-Methods', 'OPTIONS, GET, PUT, PATCH, POST, DELETE');
   res.header('Access-Control-Allow-Headers', 'Content-Type, X-Requested-With, Authorization');
 
   next();
-}
+}*/
 
 
 //Initialize routes
 const auth=require("./routes/auth");
 const muncipality=require("./routes/muncipality");
+
+//use cors
+app.use(cors());
 
 //routes
 app.use("/api/user",auth);
@@ -69,9 +75,6 @@ app.use("/api/munci",muncipality);
 
 //Initialize morgan
 app.use(logger("dev"));
-
-//use cors
-app.use(corsMiddleware);
 
 //cookie parser
 app.use(cookieparser())

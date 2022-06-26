@@ -125,3 +125,23 @@ exports.getAllConsumerData=asyncHandler(async(req,res,next)=>{
     
     });
 
+    //get single consumer data
+    exports.getSingleConsumer=asyncHandler(async(req,res,next)=>{
+
+        const consumer= await Muncipality.findOne({where:{fk_consumerId:req.body.consumer}});
+        console.log(consumer);
+
+        if(!consumer){
+            return next(new ErrorResponce("No consumer data is available",404));
+       }
+
+       var result=[];
+       result[0]=consumer;
+       console.log(result)
+       res.status(200).json({
+           success:true,
+           result
+       
+       })
+    });
+
