@@ -49,6 +49,16 @@ const syncModel=async()=>{
 }
 syncModel()
 
+//CORS middleware
+var corsMiddleware = function(req, res, next) {
+  res.header('Access-Control-Allow-Origin', 'localhost'); //replace localhost with actual host
+  res.header('Access-Control-Allow-Methods', 'OPTIONS, GET, PUT, PATCH, POST, DELETE');
+  res.header('Access-Control-Allow-Headers', 'Content-Type, X-Requested-With, Authorization');
+
+  next();
+}
+
+
 //Initialize routes
 const auth=require("./routes/auth");
 const muncipality=require("./routes/muncipality");
@@ -61,7 +71,7 @@ app.use("/api/munci",muncipality);
 app.use(logger("dev"));
 
 //use cors
-app.use(cors())
+app.use(corsMiddleware);
 
 //cookie parser
 app.use(cookieparser())

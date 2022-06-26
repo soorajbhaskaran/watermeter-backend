@@ -67,17 +67,17 @@ exports.meterData=asyncHandler(async(req,res,next)=>{
         let fine=0
         const previousBilling=await Billing.findOne({where:{fk_consumerId:result[i].dataValues.fk_consumerId},order:[['updatedAt', 'DESC']]});
         if(!previousBilling){
-         due=0;
-         fine=0;
+         due=0.0;
+         fine=0.0;
         }
         else{
             if (previousBilling.status==="unpaid"){
                 due=previousBilling.totalCost;
-                fine=previousBilling.fine+5;
+                fine=previousBilling.fine+5.0;
             }
             else{
-                due=0;
-                fine=0;  
+                due=0.0;
+                fine=0.0;  
             }
         }
         const consumedPrice=currentMonthlyPrice;
