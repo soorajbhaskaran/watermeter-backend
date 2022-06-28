@@ -15,9 +15,18 @@ exports.registerUser = asyncHandler(async (req, res, next) => {
     const { name, password,consumerNumber, currentThreshold, phoneNumber} = req.body;
 
     const role="user";
+    var consumer;
+
+    if (consumerNumber){
+       consumer=consumerNumber;
+    }
+    else{
+     consumerNumber=User.findOne({order:[['updatedAt', 'DESC']]});
+     consumer=consumerNumber.consumerNumber+1;
+    }
 
     //Create a User
-    const user = await User.create({name,consumerNumber, password, role, currentThreshold, phoneNumber});
+    const user = await User.create({name,consumerNumber:consumer, password, role, currentThreshold, phoneNumber});
 
     if (!user) {
         return next(new ErrorResponce(`Entered invalid entry`, 404));
@@ -145,9 +154,9 @@ exports.getDetails=asyncHandler(async(req,res,next)=>{
     if(!muncipality){
         return next(new ErrorResponce('Given user data is not available',404));
     }
-    const {currentWaterConsumption,currentMonthlyPrice,updatedAt}=muncipality;
+    const {currentWaterConsumption,currentMonthlyPrice,lastUpdate}=muncipality;
     
-    res.status(200).json({success:true,currentWaterConsumption,currentMonthlyPrice,updatedAt});
+    res.status(200).json({success:true,currentWaterConsumption,currentMonthlyPrice,lastUpdate});
  
  });
 

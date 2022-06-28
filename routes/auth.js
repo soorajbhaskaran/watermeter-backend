@@ -3,7 +3,7 @@ const check=require('../middlewares/check')
 
 const {registerUser,login,getMe,logout,changeRate,updateDetails,getDetails}=require('../controllers/auth');
 const {protect,authorize}=require('../middlewares/auth')
-const {payBill,getMyBill}=require('../controllers/bill')
+const {payBill,getMyBill, getMyAllBill}=require('../controllers/bill')
 
 const router=express.Router();
 
@@ -23,7 +23,8 @@ router.post('/changerate',protect,authorize('admin'),changeRate);
 
 // getting and paying user bill
 router.get('/getmybill',protect,getMyBill);
-router.post('/paybill',protect,payBill);
+router.post('/paybill',payBill);
+router.get('/getmyallbill',protect,getMyAllBill);
 
 module.exports=router;
 

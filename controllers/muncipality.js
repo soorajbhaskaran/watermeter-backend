@@ -42,12 +42,24 @@ exports.meterData=asyncHandler(async(req,res,next)=>{
    //checking if user to confirm to create or update
     const checkUser= await Muncipality.findOne({where:{fk_consumerId:fk_consumerId}});
     let muncipality;
+    const currentdate=new Date();
     if(!checkUser){
         //creating new record
-       muncipality=await Muncipality.create({currentWaterConsumption,currentMonthlyPrice,fk_consumerId,priceId,currentMeterReading:currentReading});
+       muncipality=await Muncipality.create({currentWaterConsumption,currentMonthlyPrice,fk_consumerId,priceId,currentMeterReading:currentReading,lastUpdate:currentdate.getDate() + "/"
+       + (currentdate.getMonth()+1)  + "/" 
+       + currentdate.getFullYear() + " @ "  
+       + currentdate.getHours() + ":"  
+       + currentdate.getMinutes() + ":" 
+       + currentdate.getSeconds()});
     }
     else{
-        let newContent={currentWaterConsumption:currentWaterConsumption,currentMonthlyPrice:currentMonthlyPrice,currentMeterReading:currentReading};
+        let newContent={currentWaterConsumption:currentWaterConsumption,currentMonthlyPrice:currentMonthlyPrice,currentMeterReading:currentReading,lastUpdate:currentdate.getDate() + "/"
+        + (currentdate.getMonth()+1)  + "/" 
+        + currentdate.getFullYear() + " @ "  
+        + currentdate.getHours() + ":"  
+        + currentdate.getMinutes() + ":" 
+        + currentdate.getSeconds()};
+        
         //updating the content based on userId
         await Muncipality.update(newContent,{where:{id:checkUser.id}});
         muncipality= await Muncipality.findOne({where:{id:checkUser.id}})

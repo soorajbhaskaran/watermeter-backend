@@ -5,14 +5,14 @@ const ErrorResponce=require('../utils/ErrorResponce');
 const Muncipality= require('../schemas/Muncipality');
 
 exports.payBill=asyncHandler(async(req,res,next)=>{
-const billing=await Billing.update({status:'paid',due:0},{where:{fk_consumerId:req.user.consumerNumber},order:[['updatedAt', 'DESC']]});
+const billing=await Billing.update({status:'paid',due:0},{where:{fk_consumerId:req.body.consumerNumber},order:[['updatedAt', 'DESC']]});
 if(!billing){
     return next(new ErrorResponce('Bill payment is not updated',404));
 }
 
 res.status(200).json({
     success:true,
-    message:'payment is updated'
+    message:'Payment is Updated'
 })
 });
 
@@ -41,10 +41,14 @@ exports.generateBill=asyncHandler(async(req,res,next)=>{
                 fine=0;  
             }
         }
+        const monthNames = ["January", "February", "March", "April", "May", "June",
+        "July", "August", "September", "October", "November", "December"
+         ];
+
         const consumedPrice=parseInt(result[i].dataValues.currentMonthlyPrice);
         const totalCost=consumedPrice+due+fine;
         const date=new Date();
-        const monthYear= date.getMonth()+1 + '/' +date.getFullYear();
+        const monthYear= monthNames[date.getMonth()] + '/' +date.getFullYear();
         const billing=await Billing.create({fk_consumerId:result[i].dataValues.fk_consumerId,consumedPrice:consumedPrice,totalCost:totalCost,monthYear:monthYear,due:due,fine:fine});
         if (!billing){
             return next(new ErrorResponce("Billing is not created",404));
@@ -68,3 +72,18 @@ exports.getMyBill=asyncHandler(async(req,res,next)=>{
         bill
     })
     });
+
+    //Getting all bills
+    exports.getMyAllBill=asyncHandler(async(req,res,next)=>{
+        const bill=await Billing.findAll({where:{fk_consumerId:req.user.consumerNumber},order:[['createdAt', 'DESC']]});
+        if(!bill){
+            return next(new ErrorResponce("No such bill is not found",404));
+        }
+        
+        res.status(200).json({
+            success:true,
+            bill
+        })
+        });
+
+    

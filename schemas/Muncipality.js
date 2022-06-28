@@ -34,7 +34,10 @@ const Muncipality=sequelize.define('muncipality',{
             key:"id"
         }
     }
-
+    ,lastUpdate: {
+        type: DataTypes.STRING,
+        allowNull:false
+    },
 
 });
 module.exports=Muncipality;
