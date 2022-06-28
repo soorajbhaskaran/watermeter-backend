@@ -2,7 +2,8 @@ const User=require('../schemas/User')
 const Price=require('../schemas/Price')
 const asyncHandler=require('../middlewares/async')
 const ErrorResponce=require('../utils/ErrorResponce');
-const Muncipality= require('../schemas/Muncipality')
+const Muncipality= require('../schemas/Muncipality');
+const bcrypt=require('bcryptjs');
 
 
 //USER & ADMIN
@@ -151,6 +152,28 @@ exports.getDetails=asyncHandler(async(req,res,next)=>{
     res.status(200).json({success:true,currentWaterConsumption,currentMonthlyPrice,lastUpdate});
  
  });
+
+ //Chnging default password
+exports.changePassword=asyncHandler(async(req,res,next)=>{
+
+const consumerNumber=req.user.consumerNumber;
+const {oldPassword,newPassword}=req.body;
+const user=await User.findByPk(consumerNumber);
+const isMatch=await user.matchPassword(oldPassword);
+if(!isMatch){
+    return next(new ErrorResponce('Invalid old password',401));
+}
+const salt =  await bcrypt.genSalt(10);
+const checkNewPassword = await bcrypt.hash(newPassword, salt);
+const updateContent={password:checkNewPassword};
+const userUpdate=await User.update(updateContent,{where:{consumerNumber}});
+if(!userUpdate){
+    return next(new ErrorResponce('Password cannot be null',401));
+}
+res.status(200).json({success:true,data:{}});
+
+}
+ );
 
 //Create a cookie from create user and login
 const sendbackCookie = (statusCode, res, user) => {
