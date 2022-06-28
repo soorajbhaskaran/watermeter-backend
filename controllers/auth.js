@@ -15,18 +15,10 @@ exports.registerUser = asyncHandler(async (req, res, next) => {
     const { name, password,consumerNumber, currentThreshold, phoneNumber} = req.body;
 
     const role="user";
-    var consumer;
 
-    if (consumerNumber){
-       consumer=consumerNumber;
-    }
-    else{
-     consumerNumber=User.findOne({order:[['updatedAt', 'DESC']]});
-     consumer=consumerNumber.consumerNumber+1;
-    }
 
     //Create a User
-    const user = await User.create({name,consumerNumber:consumer, password, role, currentThreshold, phoneNumber});
+    const user = await User.create({name,consumerNumber, password, role, currentThreshold, phoneNumber});
 
     if (!user) {
         return next(new ErrorResponce(`Entered invalid entry`, 404));
