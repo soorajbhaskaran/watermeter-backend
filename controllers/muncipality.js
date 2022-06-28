@@ -35,8 +35,8 @@ exports.meterData=asyncHandler(async(req,res,next)=>{
         currentMonthlyPrice=currentPrice;
         
     }
-    else if(currentWaterConsumption<10000){
-      currentMonthlyPrice=currentPrice+((currentWaterConsumption-quantity)/1000)*4.41;
+    else {
+      currentMonthlyPrice=parseInt(currentPrice)+((currentWaterConsumption-quantity)/10)*4;
     }
 
    //checking if user to confirm to create or update
